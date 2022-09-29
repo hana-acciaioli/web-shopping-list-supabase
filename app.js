@@ -1,5 +1,5 @@
 /* Imports */
-import { createList, getList, purchasedItem } from './fetch-utils.js';
+import { createList, getList, purchasedItem, deleteAllLists } from './fetch-utils.js';
 // this will check if we have a user and set signout link if it exists
 import './auth/user.js';
 
@@ -9,6 +9,7 @@ import { renderList } from './render-utils.js';
 const addShoppingListForm = document.getElementById('add-shopping-list-form');
 const errorDisplay = document.getElementById('error-display');
 const shoppingList = document.getElementById('shopping-list');
+const deleteAllButton = document.getElementById('delete-all-button');
 /* State */
 let lists = [];
 let error = null;
@@ -46,6 +47,16 @@ addShoppingListForm.addEventListener('submit', async (e) => {
     }
 });
 
+deleteAllButton.addEventListener('click', async () => {
+    const response = await deleteAllLists();
+    error = response.error;
+    if (error) {
+        displayError();
+    } else {
+        lists = [];
+        displayLists();
+    }
+});
 /* Display Functions */
 function displayError() {
     if (error) {
