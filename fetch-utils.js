@@ -36,3 +36,7 @@ export async function createList(list) {
 export async function getList() {
     return await client.from('lists').select('*').order('created_at');
 }
+
+export async function purchasedItem(id) {
+    return await client.from('lists').update({ bought: true }).eq('id', id).single();
+}
