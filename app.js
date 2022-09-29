@@ -1,5 +1,5 @@
 /* Imports */
-import { createList } from './fetch-utils.js';
+import { createList, getList } from './fetch-utils.js';
 // this will check if we have a user and set signout link if it exists
 import './auth/user.js';
 
@@ -14,6 +14,18 @@ let lists = [];
 let error = null;
 
 /* Events */
+window.addEventListener('load', async () => {
+    const response = await getList();
+    lists = response.data;
+    error = response.error;
+    if (error) {
+        displayError();
+    }
+    if (lists) {
+        displayLists();
+    }
+});
+
 addShoppingListForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(addShoppingListForm);
