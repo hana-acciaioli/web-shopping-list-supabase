@@ -1,5 +1,12 @@
 /* Imports */
-import { createList, getList, purchasedItem, deleteAllLists } from './fetch-utils.js';
+import {
+    createList,
+    getList,
+    purchasedItem,
+    deleteAllLists,
+    deletePurchasedLists,
+    getUser,
+} from './fetch-utils.js';
 // this will check if we have a user and set signout link if it exists
 import './auth/user.js';
 
@@ -10,10 +17,12 @@ const addShoppingListForm = document.getElementById('add-shopping-list-form');
 const errorDisplay = document.getElementById('error-display');
 const shoppingList = document.getElementById('shopping-list');
 const deleteAllButton = document.getElementById('delete-all-button');
+const deletePurchasedButton = document.getElementById('delete-purchased-button');
+
 /* State */
 let lists = [];
 let error = null;
-
+let user = getUser();
 /* Events */
 window.addEventListener('load', async () => {
     const response = await getList();
@@ -43,7 +52,7 @@ addShoppingListForm.addEventListener('submit', async (e) => {
     } else {
         lists.push(list);
         displayLists();
-        addShoppingListForm.requestFullscreen();
+        addShoppingListForm.reset();
     }
 });
 
@@ -54,6 +63,24 @@ deleteAllButton.addEventListener('click', async () => {
         displayError();
     } else {
         lists = [];
+        displayLists();
+    }
+});
+
+deletePurchasedButton.addEventListener('click', async () => {
+    const response = await deletePurchasedLists(user.id);
+    error = response.error;
+
+    if (error) {
+        displayError();
+    } else {
+        const toBuyLists = [];
+        for (const list of lists) {
+            if (!list.bought) {
+                toBuyLists.push(list);
+            }
+        }
+        lists = toBuyLists;
         displayLists();
     }
 });
