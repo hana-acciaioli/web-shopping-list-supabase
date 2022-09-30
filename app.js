@@ -6,6 +6,7 @@ import {
     deleteAllLists,
     deletePurchasedLists,
     getUser,
+    deleteSpecifiedItem,
 } from './fetch-utils.js';
 // this will check if we have a user and set signout link if it exists
 import './auth/user.js';
@@ -18,6 +19,7 @@ const errorDisplay = document.getElementById('error-display');
 const shoppingList = document.getElementById('shopping-list');
 const deleteAllButton = document.getElementById('delete-all-button');
 const deletePurchasedButton = document.getElementById('delete-purchased-button');
+// const deleteItemButton = document.getElementById('delete-item-button');
 
 /* State */
 let lists = [];
@@ -84,6 +86,7 @@ deletePurchasedButton.addEventListener('click', async () => {
         displayLists();
     }
 });
+
 /* Display Functions */
 function displayError() {
     if (error) {
@@ -107,6 +110,19 @@ function displayLists() {
 
             if (error) {
                 displayError();
+            } else if (list.bought) {
+                const response = deleteSpecifiedItem(list.id);
+                error = response.error;
+
+                if (error) {
+                    displayError();
+                } else {
+                    const index = lists.indexOf(list);
+                    if (index !== -1) {
+                        lists.splice(index, 1);
+                    }
+                    displayLists();
+                }
             } else {
                 const index = lists.indexOf(list);
                 lists[index] = updatedList;
