@@ -62,3 +62,7 @@ form button {
 form button:disabled {
     opacity: 0.5;
 }
+
+.bought {
+    text-decoration: line-through green;
+}
